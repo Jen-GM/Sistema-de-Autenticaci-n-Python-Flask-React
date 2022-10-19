@@ -21,18 +21,10 @@ const getState = ({ getStore, getActions, setStore }) => {
       exampleFunction: () => {
         getActions().changeColor(0, "green");
       },
-
-      getMessage: async () => {
-        try {
-          // fetching data from the backend
-          const resp = await fetch(process.env.BACKEND_URL + "/api/hello");
-          const data = await resp.json();
-          setStore({ message: data.message });
-          // don't forget to return something, that is how the async resolves
-          return data;
-        } catch (error) {
-          console.log("Error loading message from backend", error);
-        }
+      //Getting the token from the session store
+      setTokenFromSessionStore: () => {
+        const token = sessionStorage.getItem("token");
+        if(token && token != "" && token != undefined) setStore({ token: token })
       },
 
       login: async (email, password) => {
@@ -49,22 +41,47 @@ const getState = ({ getStore, getActions, setStore }) => {
         };
         /* Trae la informacion del backend por medio del fetch */
         try {
-          const resp = await fetch(
-            "https://3001-jengm-sistemadeautenti-05qbzxxbgzn.ws-us71.gitpod.io/api/token",
-            results
-          );
-          if (resp !== 200) {
-            alert("Hay un error en el fetch");
+          const resp = await fetch("https://3001-jengm-sistemadeautenti-05qbzxxbgzn.ws-us71.gitpod.io/api/token", results)
+          if (resp.status !== 200) {
+            alert("Error al cargar");
             return false;
           }
+
           const data = await resp.json();
           console.log("Result from the backend", data);
           sessionStorage.setItem("token", data.access_token);
           setStore({ token: data.access_token });
+          return true;
+
         } catch (error) {
           console.error("Error al cargar", error);
         }
       },
+
+      logout: () => {
+        const token = sessionStorage.removeItem("token");
+        setStore({ token: null })
+      },
+
+      getMessage: async () => {
+        const store = getStore();
+        const result = {
+          headers: {
+            "Authorization" : "Bearer" + store.token
+          }
+        }
+        try {
+          // fetching data from the backend
+          const resp = await fetch(process.env.BACKEND_URL + "/api/hello", result);
+          const data = await resp.json();
+          setStore({ message: data.message });
+          // don't forget to return something, that is how the async resolves
+          return data;
+        } catch (error) {
+          console.log("Error loading message from backend", error);
+        }
+      },
+
 
       changeColor: (index, color) => {
         //get the store

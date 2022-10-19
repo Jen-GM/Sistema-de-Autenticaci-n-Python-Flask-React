@@ -23,4 +23,13 @@ def handle_token():
         return jsonify({"msg": "Bad email or password"}), 401
 
     access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token)
+    return jsonify(access_token=access_token), 200
+
+
+@api.route('/hello', methods=['GET'])
+@jwt_required()
+def hello_world():
+    result = {
+        "message" : "Hello World"
+    }
+    return jsonify(result), 200

@@ -7,21 +7,19 @@ export const Login = () => {
   const { store, actions } = useContext(Context);
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ]  = useState("");
-  const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
 
   const handleClick = () => {
-    actions.login(email, password)
-    /* .then(() => {
-      navigate.push("/")
-    }) */
+    actions.login(email, password);
   };
+  
+  if(store.token && store.token != "" && store.token != undefined) navigate("/");
 
 /* Crea el form para que user ingrese los datos y se asegura de que user se haya logueado solo 1 vez. */
   return (
     <div className="text-center mt-5">
       <h1>Login Page</h1>
-      {token && token != "" && token != undefined ? ("Se ha logueado con el token: " + token) : (
+      {store.token && store.token != "" && store.token != undefined ? ("Se ha logueado con el token: " + store.token) : (
         <div>
           <input
             type="text"
