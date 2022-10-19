@@ -29,7 +29,9 @@ def handle_token():
 @api.route('/hello', methods=['GET'])
 @jwt_required()
 def hello_world():
+
+    email = get_jwt_identity()
     result = {
-        "message" : "Hello World"
+        "message" : "Hello " + email
     }
     return jsonify(result), 200
