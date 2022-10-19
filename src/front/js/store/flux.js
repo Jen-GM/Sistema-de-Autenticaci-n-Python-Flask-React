@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
+      token: null,
       message: null,
       demo: [
         {
@@ -59,6 +60,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           const data = await resp.json();
           console.log("Result from the backend", data);
           sessionStorage.setItem("token", data.access_token);
+          setStore({ token: data.access_token });
         } catch (error) {
           console.error("Error al cargar", error);
         }

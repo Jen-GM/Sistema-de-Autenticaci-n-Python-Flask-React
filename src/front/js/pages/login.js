@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 
@@ -7,12 +8,14 @@ export const Login = () => {
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ]  = useState("");
   const token = sessionStorage.getItem("token");
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    actions.login(email, password).then(() => {
-      
-    })
-  }
+    actions.login(email, password)
+    /* .then(() => {
+      navigate.push("/")
+    }) */
+  };
 
 /* Crea el form para que user ingrese los datos y se asegura de que user se haya logueado solo 1 vez. */
   return (
